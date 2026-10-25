@@ -23,6 +23,7 @@ TEMP_LIMIT_PATHS=$(ls "$BASE"/*/temp_warm "$BASE"/*/temp_hot 2>/dev/null)
 BATTERY_TEMP_PATHS=$(ls "$BASE"/*/temp "$BASE"/battery/temp 2>/dev/null)
 CHARGER_STATUS_PATHS=$(ls "$BASE"/usb/online "$BASE"/usb/present "$BASE"/ac/online "$BASE"/ac/present "$BASE"/charger/online "$BASE"/main/online "$BASE"/battery/status 2>/dev/null)
 PREVIOUS_CHARGER_STATE=0
+TEMP_WARNING_SENT=0
 while :; do
 	sleep 5
 	CHARGER_CONNECTED=0
@@ -39,7 +40,10 @@ while :; do
 	done
 	if [ "$CHARGER_CONNECTED" != "$PREVIOUS_CHARGER_STATE" ]; then
 		PREVIOUS_CHARGER_STATE=$CHARGER_CONNECTED
-		[ "$CHARGER_CONNECTED" = 1 ] || continue
+		if [ "$CHARGER_CONNECTED" = 0 ]; then
+			TEMP_WARNING_SENT=0
+			continue
+		fi
 		for NODE in $CURRENT_PATHS; do
 			safe_write "$NODE" "$TARGET_CURRENT"
 		done
@@ -72,7 +76,8 @@ while :; do
 		fi
 		[ "$BATTERY_TEMP" -le "$MAX_BATTERY_TEMP" ] || MAX_BATTERY_TEMP=$BATTERY_TEMP
 	done
-	if [ "$MAX_BATTERY_TEMP" -ge "$MAX_TEMP" ]; then
-		reboot -p
+	if [ "$MAX_BATTERY_TEMP" -ge "$MAX_TEMP" ] && [ "$TEMP_WARNING_SENT" = 0 ]; then
+		su -lp 2000 -c "cmd notification post -S bigtext -t 'Better FastCharge' perfai 'Warning: Temperature is too high. If this warning is incorrect, ignore it.'"
+		TEMP_WARNING_SENT=1
 	fi
 done

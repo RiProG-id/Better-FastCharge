@@ -4,9 +4,9 @@ An Android module designed to optimize fast charging performance and manage ther
 
 ## Features
 
-- **Charging Optimization:** Optimizes charging limits for maximum supported speed when connected.
-- **Thermal Safety Management:** Monitors battery temperature during charging to prevent overheating.
-- **Automatic Execution:** Background service automatically manages charging profiles upon charger connection.
+- **Charging Optimization:** Applies configured charging limits when a charger is connected.
+- **Thermal Safety Management:** Monitors battery temperature during charging and sends a warning notification when the temperature reaches the configured limit.
+- **Automatic Execution:** Background service automatically applies charging settings upon charger connection.
 
 ## Installation
 
