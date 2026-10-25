@@ -1,7 +1,7 @@
 id=BFC
 name=Better FastCharge
-version=v1.0.1
-versionCode=101
+version=v1.0.2
+versionCode=102
 author=@RiProG
 description=An Android module designed to optimize fast charging performance and manage thermal safety.
 updateJson=https://raw.githubusercontent.com/RiProG-id/Better-FastCharge/refs/heads/main/update.json
